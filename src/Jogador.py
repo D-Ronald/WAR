@@ -42,9 +42,13 @@ class Jogador:
     def mover_exercito():
         pass
     
-    def atacar_territorio():
-        pass
-    
+    def atacar_territorio(self, inimigo , território_saida, territorio_alvo, qnt_exercito):
+       if inimigo.id_jogador != self.id_jogador:
+           if território_saida in self.territorios and território_saida in inimigo.territorios:
+                return 'apto'
+       else: 
+           return 'você não pode atacar seus próprios territórios'
+           
     def receber_exercito():
         pass    
     

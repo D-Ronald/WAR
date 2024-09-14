@@ -1,24 +1,29 @@
-import random
+import random, unittest
 from src.Exercito import Exercito
-def test_new_exercito():
-    cor = 'white'
-    quantidade = 3
-    exercito = Exercito(cor, quantidade)
-    assert exercito.get_cor() == cor
-    assert exercito.get_quantidade() == quantidade
 
-def test_set_cor():
-    cor = 'black'
-    quantidade = 3
-    exercito = Exercito(None, quantidade)
-    exercito.set_cor(cor)
-    assert exercito.get_cor() == cor
-    
-def test_set_quantidade():
-    cor = 'black'
-    quantidade = 3
-    exercito = Exercito(cor, None)
-    exercito.set_quantidade(quantidade)
-    assert exercito.get_quantidade() == quantidade
-    assert exercito.get_quantidade() <4 and exercito.get_quantidade() >0
-    assert type(exercito.get_quantidade()) != float
+class TestExercito(unittest.TestCase):
+    def test_new_exercito(self):
+        self.cor = 'white'
+        self.quantidade = 3
+        self.exercito = Exercito(self.cor, self.quantidade)
+        self.assertEqual( self.exercito.get_cor(), self.cor)
+        self.assertEqual(self.exercito.get_quantidade(), self.quantidade)
+
+    def test_set_cor(self):
+        self.cor = 'black'
+        self.quantidade = 3
+        self.exercito = Exercito(None, self.quantidade)
+        self.exercito.set_cor(self.cor)
+        self.assertEqual( self.exercito.get_cor(),self.cor)
+        
+    def test_set_quantidade(self):
+        self.cor = 'black'
+        self.quantidade = 3
+        self.exercito = Exercito(self.cor, None)
+        self.exercito.set_quantidade(self.quantidade)
+        self.assertEqual( self.exercito.get_quantidade(), self.quantidade)
+        self.assertTrue(self.exercito.get_quantidade() <4 and self.exercito.get_quantidade() >0)
+        self.assertEqual( type(self.exercito.get_quantidade()), int)
+        
+if __name__ == '__main__':
+    unittest.main()

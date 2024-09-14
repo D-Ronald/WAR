@@ -9,15 +9,16 @@ class Jogo:
         self.jogadores = jogadores
         self.turno_atual = turno_atual
         self.territorios = []
+        self.jogadores_id = []
 
     def iniciar_jogo(self):
-        self.ordenar_jogadores()
+        self.ordenar_jogadores()    
         self.distribuir_territorios()
         self.distribuir_exercitos()
 
     def ordenar_jogadores(self):
         import random
-        random.shuffle(self.jogadores)
+        random.shuffle(self.jogadores_id)
 
     def distribuir_exercitos(self):
         for jogador in self.jogadores:
