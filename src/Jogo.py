@@ -5,11 +5,20 @@ from src.Exercito import Exercito
 from src.Objetivo import Objetivo
 
 class Jogo:
+    _instance = None  #armazena uma unica instancia da classe
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(Jogo, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self, jogadores: List[Jogador], turno_atual: int = 0):
-        self.jogadores = jogadores
-        self.turno_atual = turno_atual
-        self.territorios = []
-        self.jogadores_id = []
+        if not hasattr(self, "initialized"):  # Impede reexecução do __init__
+            self.jogadores = jogadores
+            self.turno_atual = turno_atual
+            self.territorios = []
+            self.jogadores_id = []
+            self.initialized = True  # Inicializa o objeto
 
     def iniciar_jogo(self):
         self.ordenar_jogadores()    
