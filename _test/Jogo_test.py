@@ -11,7 +11,8 @@ class TestJogo(unittest.TestCase):
         # Configuração inicial para os testes
         self.jogador1 = Jogador(id_jogador="Jogador1")
         self.jogador2 = Jogador(id_jogador="Jogador2")
-        self.jogo = Jogo(jogadores=[self.jogador1, self.jogador2])  # A primeira instância de Jogo é criada aqui
+        objetivos = ["Objetivo 1", "Objetivo 2"]
+        self.jogo = Jogo(jogadores=[self.jogador1, self.jogador2], objetivos=objetivos)  # A primeira instância de Jogo é criada aqui
 
         carta_territorio1 = Cartas(tipo="Território", descricao="Território 1")
         carta_territorio2 = Cartas(tipo="Território", descricao="Território 2")
@@ -23,13 +24,14 @@ class TestJogo(unittest.TestCase):
         self.jogo.adicionar_territorio(self.territorio2)
 
     def tearDown(self):
-       
+        # Reseta a instância Singleton após cada teste
         Jogo._instance = None
 
     def test_singleton_instance(self):
         # Testa se o Singleton está funcionando corretamente
-        jogo2 = Jogo(jogadores=[self.jogador1, self.jogador2])
-        self.assertIs(self.jogo, jogo2)  
+        objetivos = ["Objetivo 1", "Objetivo 2"]
+        jogo2 = Jogo(jogadores=[self.jogador1, self.jogador2], objetivos=objetivos)
+        self.assertIs(self.jogo, jogo2)  # Verifica se as duas instâncias são a mesma
 
     def test_set_territorios(self):
         jogador = Jogador('123')
