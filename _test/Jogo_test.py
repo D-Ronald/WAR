@@ -1,60 +1,54 @@
 import unittest
-from src.Jogo import Jogo
 from src.Jogador import Jogador
 from src.Territorio import Territorio
 from src.Exercito import Exercito
 from src.Objetivo import Objetivo
 from src.Cartas import Cartas
+from src.Jogo import Jogo  
 
 class TestJogo(unittest.TestCase):
+
     def setUp(self):
-        # Configuração inicial para os testes
-        self.jogador1 = Jogador(id_jogador="Jogador1")
-        self.jogador2 = Jogador(id_jogador="Jogador2")
-        objetivos = ["Objetivo 1", "Objetivo 2"]
-        self.jogo = Jogo(jogadores=[self.jogador1, self.jogador2], objetivos=objetivos)  # A primeira instância de Jogo é criada aqui
-
-        carta_territorio1 = Cartas(tipo="Território", descricao="Território 1")
-        carta_territorio2 = Cartas(tipo="Território", descricao="Território 2")
-
-        self.territorio1 = Territorio(carta=carta_territorio1, jogador=None, qnt_exercitos=0, vizinhos=[])
-        self.territorio2 = Territorio(carta=carta_territorio2, jogador=None, qnt_exercitos=0, vizinhos=[])
-
-        self.jogo.adicionar_territorio(self.territorio1)
-        self.jogo.adicionar_territorio(self.territorio2)
-
+        self.jogo = Jogo()
+        self.jogador1 = Jogador(1)
+        self.jogador1.cor_exercito = 'PRETO'
+        self.jogador2 = Jogador(2)
+        self.jogador2.cor_exercito = 'BRANCO'
+        self.jogador3 = Jogador(3)
+        self.jogador3.cor_exercito = 'VERDE'
+        self.jogo.jogadores = [self.jogador1, self.jogador2]
+        
     def tearDown(self):
         # Reseta a instância Singleton após cada teste
         Jogo._instance = None
 
     def test_singleton_instance(self):
-        # Testa se o Singleton está funcionando corretamente
-        objetivos = ["Objetivo 1", "Objetivo 2"]
-        jogo2 = Jogo(jogadores=[self.jogador1, self.jogador2], objetivos=objetivos)
+        jogo2 = Jogo()
         self.assertIs(self.jogo, jogo2)  # Verifica se as duas instâncias são a mesma
-
-    def test_set_territorios(self):
-        jogador = Jogador('123')
-        carta_territorio = Cartas(tipo="Território", descricao="Brasil")
-        territorio = Territorio(carta=carta_territorio, jogador=jogador.get_id_jogador(), qnt_exercitos=0, vizinhos=[])
-        self.assertEqual(territorio.get_nome(), "Brasil")
-        self.assertEqual(territorio.get_jogador(), jogador.get_id_jogador())
-        self.assertEqual(territorio.get_qnt_exercitos(), 0)
-        self.assertEqual(territorio.get_vizinhos(), [])
 
     def test_iniciar_jogo(self):
         self.jogo.iniciar_jogo()
         self.assertEqual(self.jogo.turno_atual, 0)
-        self.assertTrue(any(jogador.get_exercitos() for jogador in self.jogo.jogadores))
+        self.assertTrue(any(jogador.get_exercitos() for jogador in self.jogo.jogadores)) 
 
-    def test_distribuir_territorios(self):
-        self.jogo.distribuir_territorios()
-        self.assertEqual(self.territorio1.get_jogador(), self.jogador1.get_id_jogador())
-        self.assertEqual(self.territorio2.get_jogador(), self.jogador2.get_id_jogador())
+    def test_distribuir_exercitos(self):
+        self.jogo.iniciar_jogo()
+        for jogador in self.jogo.jogadores:
+            self.assertEqual(len(jogador.get_exercitos()), 1) 
+            self.assertEqual(jogador.get_exercitos()[0].quantidade, 10) 
 
+    def test_distribuir_objetivos_jogadores(self):
+        self.jogo.iniciar_jogo()
+        for jogador in self.jogo.jogadores:
+            self.assertIsNotNone(jogador.get_objetivo())
+
+    def test_adicionar_territorio(self):
+        novo_territorio = Territorio(Cartas('Novo Território', 'Território'), None, 0, [])
+        self.jogo.adicionar_territorio(novo_territorio)
+        self.assertIn(novo_territorio, self.jogo.territorios) 
+    
     def test_avancar_turno(self):
         self.jogo.avancar_turno()
         self.assertEqual(self.jogo.turno_atual, 1)
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

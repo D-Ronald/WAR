@@ -3,8 +3,14 @@ from src.Territorio import Territorio
 from src.Exercito import Exercito
 from src.Cartas import Cartas  # Certifique-se de importar a classe Cartas
 import unittest
+from src.Jogador import EstrategiaMoverExercito, EstrategiaAtaque, EstrategiaDefesa
 
 class TestJogador(unittest.TestCase):
+    def setUp(self):
+        self.jogador = Jogador(1)
+        self.estrategia_ataque = EstrategiaAtaque()
+        self.estrategia_mover = EstrategiaMoverExercito()
+        self.estrategia_defesa = EstrategiaDefesa()
     
     def test_new_player(self):
         self.player = Jogador('123')
@@ -52,6 +58,49 @@ class TestJogador(unittest.TestCase):
         assert self.jogador.get_cor_exercito() == self.cor
         assert self.jogador.get_cor_exercito() != 'black'
         assert len(self.jogador.get_cor_exercito()) == len(self.cor)
+        
+    def test_set_estrategia_acao(self):
+        # Testa a configuração da estratégia de ataque
+        self.jogador.set_estrategia_acao(self.estrategia_ataque)
+        self.assertEqual(self.jogador.estrategia_acao, self.estrategia_ataque)
+
+        # Testa a configuração da estratégia de movimentação
+        self.jogador.set_estrategia_acao(self.estrategia_mover)
+        self.assertEqual(self.jogador.estrategia_acao, self.estrategia_mover)
+
+        # Testa a configuração da estratégia de defesa
+        self.jogador.set_estrategia_acao(self.estrategia_defesa)
+        self.assertEqual(self.jogador.estrategia_acao, self.estrategia_defesa)
+
+    def test_executar_acao_sem_estrategia(self):
+        # Testa a execução da ação sem uma estratégia definida
+        resultado = self.jogador.executar_acao()
+        self.assertEqual(resultado, 'Nenhuma estratégia definida')
+
+    def test_executar_acao_com_estrategia_ataque(self):
+        self.jogador.set_estrategia_acao(self.estrategia_ataque)
+        self.jogador.set_territorios('Territorio A')
+        self.jogador.set_territorios('Territorio B')
+        inimigo = Jogador(2)
+        inimigo.set_territorios('Territorio C')
+
+        resultado = self.jogador.executar_acao(inimigo, 'Territorio A', 'Territorio C', 5)
+        self.assertEqual(resultado, 'Apto para atacar')
+
+    def test_executar_acao_com_estrategia_mover(self):
+        self.jogador.set_estrategia_acao(self.estrategia_mover)
+        self.jogador.set_territorios('Territorio A')
+        self.jogador.set_territorios('Territorio B')
+
+        resultado = self.jogador.executar_acao('Territorio A', 'Territorio B', 5)
+        self.assertEqual(resultado, 'Movendo 5 exércitos de Territorio A para Territorio B')
+
+    def test_executar_acao_com_estrategia_defesa(self):
+        self.jogador.set_estrategia_acao(self.estrategia_defesa)
+        self.jogador.set_territorios('Territorio A')
+
+        resultado = self.jogador.executar_acao('Territorio A')
+        self.assertEqual(resultado, 'Defendendo o território Territorio A')
 
 if __name__ == '__main__':
     unittest.main()
